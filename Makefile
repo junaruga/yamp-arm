@@ -67,6 +67,7 @@ build : $(TARGETS)
 10-rpm-pkgs :
 	"$(DOCKER)" build --rm \
 		--build-arg ARCH="$(ARCH)" \
+		--build-arg OS_VERSION="$(OS_VERSION)" \
 		-t "$(IMAGE_PREFIX)$@" containers/$@
 .PHONY : 10-rpm-pkgs
 

@@ -6,6 +6,36 @@ set -evo pipefail
 
 pushd /usr/local/src
 
+if ! command -v samtools; then
+    # htslib
+    # https://github.com/samtools/htslib
+    wget -q https://github.com/samtools/htslib/archive/1.9.tar.gz -O htslib.tar.gz
+    tar tzvf htslib.tar.gz > htslib.tar.gz.files
+    head -1 htslib.tar.gz.files
+    tar xzf htslib.tar.gz
+    pushd htslib-*
+    make
+    make install
+    popd
+    rm -f htslib.tar.gz
+
+    # Samtools
+    # https://github.com/samtools/samtools
+    wget -q https://github.com/samtools/samtools/archive/1.9.tar.gz -O samtools.tar.gz
+    tar tzvf samtools.tar.gz > samtools.tar.gz.files
+    head -1 samtools.tar.gz.files
+    tar xzf samtools.tar.gz
+    pushd samtools-*
+    autoheader
+    autoconf -Wno-syntax
+    ./configure || (cat config.log; false)
+    make
+    make install
+    popd
+    rm samtools.tar.gz
+    samtools --version
+fi
+
 # Nextflow
 # https://github.com/nextflow-io/nextflow/releases
 wget -q https://github.com/nextflow-io/nextflow/archive/v19.01.0.tar.gz -O nextflow.tar.gz
